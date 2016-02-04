@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/traffic simulator.iml" filepath="$PROJECT_DIR$/.idea/modules/traffic simulator.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/traffic-simulator.iml" filepath="$PROJECT_DIR$/.idea/modules/traffic-simulator.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/traffic-simulator-build.iml" filepath="$PROJECT_DIR$/.idea/modules/traffic-simulator-build.iml" />
     </modules>
