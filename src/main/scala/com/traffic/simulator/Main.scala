@@ -5,9 +5,10 @@ package com.traffic.simulator
   */
 object Main {
 
-  val tickPeriod = 3000; //milliseconds
+  val tickPeriod = 10; //milliseconds
+  val steps = 50; //no of execution steps
 
   def main(args: Array[String]) {
-    new Core(tickPeriod).start()
+    new Core(tickPeriod, steps).start()
   }
 }
