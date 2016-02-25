@@ -9,6 +9,6 @@ object Main {
   val steps = 50; //no of execution steps
 
   def main(args: Array[String]) {
-    new Core(tickPeriod, steps).start()
+    new OneLaneSim(tickPeriod, steps).start()
   }
 }
