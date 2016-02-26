@@ -1,60 +1,46 @@
 package com.traffic.simulator
 
-import java.util
-import java.util.{TimerTask, Timer}
-
-import com.typesafe.scalalogging.LazyLogging
-
 import scala.util.Random
 
 /**
   * Created by razvan on 2/4/2016.
   */
-class OneLaneSim(tickPeriod: Int, steps: Int = 0) extends Simulation(tickPeriod, steps){
+class OneLaneSim(steps: Int = 0, params: OneLaneSimParams) extends Simulation(steps) {
+  private val carsOrdering = Ordering[Double].on[Car](car => -car.currentPos)
+  private val _cars = scala.collection.mutable.SortedSet[Car]()(carsOrdering)
 
-  val carsOrdering = Ordering[Double].on[Car](car => -car.currentPos)
-  val cars = scala.collection.mutable.SortedSet[Car]()(carsOrdering)
+  def cars = _cars
 
-  var stepCounter = 0
+  private def getRandSpeed(): Double = params.minSpeed + Random.nextDouble() * (params.maxSpeed - params.minSpeed)
 
-  private def getRandSpeed(): Double = OneLaneSim.MIN_CAR_SPEED + Random.nextDouble() * (OneLaneSim.MAX_CAR_SPEED - OneLaneSim.MIN_CAR_SPEED)
-
-  private def getRandDestination(start:Double): Double = start + Random.nextDouble() * (OneLaneSim.END_AXIS - start)
+  private def getRandDestination(start: Double): Double = start + Random.nextDouble() * (params.endAxis - start)
 
   private def updateCarPos(car: Car, nextCar: Car = null) = {
     val desiredPos = car.getFutureDesiredPosition
     car.currentPos = if (nextCar != null) math.min(nextCar.getImmediateBehindPosition, desiredPos) else desiredPos
   }
 
-  override protected def tick() = {
+  def logCars(str:String):String = str + " " + _cars.toString()
+
+  override protected def step() = {
     /* Spawn */
-    if (Random.nextDouble() < OneLaneSim.SPAWN_RATE) {
-      val spawnPos = Spawner.spawn(OneLaneSim.START_AXIS, OneLaneSim.END_AXIS, cars.map(_.currentPos))
+    if (Random.nextDouble() < params.spawnRate) {
+      val spawnPos = Spawner.spawn(params.startAxis, params.endAxis, _cars.map(_.currentPos))
       if (spawnPos != None) {
         val new_car = new Car(spawnPos.get, getRandDestination(spawnPos.get), getRandSpeed())
-        cars += new_car
+        _cars += new_car
       }
     }
-    logger.info(cars.toString())
+    logger.info(logCars("Spawn"))
     /* Step */
-    if (cars.size > 0) {
-      updateCarPos(cars.head)
-      if (cars.size > 1)
-        cars.iterator.sliding(2).foreach(pair => updateCarPos(pair.tail.head, pair.head))
+    if (_cars.size > 0) {
+      updateCarPos(_cars.head)
+      if (_cars.size > 1)
+        _cars.iterator.sliding(2).foreach(pair => updateCarPos(pair.tail.head, pair.head))
     }
+    logger.debug(logCars("Step"))
     /* Remove */
-    cars.retain(car => !car.reachedDestination())
-    /* Count steps */
-    stepCounter += 1
-    if (stepCounter == steps)
-      timer.cancel()
+    _cars.retain(car => !car.reachedDestination())
+    logger.debug(logCars("Remove"))
   }
-}
-
-object OneLaneSim {
-  val START_AXIS:Double = 0
-  val END_AXIS:Double = 100
-  val MIN_CAR_SPEED: Double = 1
-  val MAX_CAR_SPEED:Double = 5
-  val SPAWN_RATE:Double = 0.6
 }

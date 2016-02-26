@@ -27,8 +27,7 @@ object Spawner {
     var availableLen:Double = 0
     intervals.foreach(p => availableLen += getLenRange(p))
     if (availableLen > 0) {
-      var chosen = Random.nextDouble() * availableLen
-      Some(pickPos(chosen, intervals))
+      Some(pickPos(Random.nextDouble() * availableLen, intervals))
     }
     else
       None

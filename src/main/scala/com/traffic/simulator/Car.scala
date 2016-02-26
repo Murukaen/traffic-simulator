@@ -21,5 +21,5 @@ object Car {
   private def incCounter() = {idCounter += 1; idCounter}
   def collide(car1: Car, car2: Car) = car1.collides(car2)
   def collide(car:Car, pos: Double) = car.collides(pos)
-  def collide(pos1: Double, pos2: Double) = math.abs(pos1 - pos2) <= Car.LENGTH
+  def collide(pos1: Double, pos2: Double) = math.abs(pos1 - pos2) < Car.LENGTH
 }
