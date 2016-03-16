@@ -14,19 +14,19 @@ abstract class Simulation(steps: Int) extends LazyLogging {
 
   val stepCount = steps
 
-  protected def step
+  protected def tick
 
-  private def tick(cnt: Int): Unit = {
+  private def pTick(cnt: Int): Unit = {
     if (cnt > 0) {
-      step
+      tick
       if (stepDone != null)
         stepDone(this)
-      tick(cnt - 1)
+      pTick(cnt - 1)
     }
   }
 
   def start(stepDone: (Simulation) => Unit = null): Unit = {
     this.stepDone = stepDone
-    tick(stepCount)
+    pTick(stepCount)
   }
 }
