@@ -1,13 +1,10 @@
 package com.traffic.simulator
 
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{FlatSpec, Matchers}
+
 import scala.collection.mutable
-import scala.collection.mutable.{HashSet, SortedSet}
 import scala.util.Random
 
-/**
-  * Created by razvan on 24.02.2016.
-  */
 class SpawnerTest extends FlatSpec with Matchers {
   val halfLenght = Car.LENGTH / 2
   val start = 0
@@ -20,7 +17,7 @@ class SpawnerTest extends FlatSpec with Matchers {
     val end = Car.LENGTH * 3
     for (i <- 1 to tries) {
       val pos = Spawner.spawn(start, end, emptySortedSet)
-      assert(pos != None)
+      assert(pos isDefined)
       assert(pos.get > start + halfLenght && pos.get < end - halfLenght)
     }
   }
@@ -42,8 +39,8 @@ class SpawnerTest extends FlatSpec with Matchers {
     positions += 9 * Car.LENGTH + halfLenght + Random.nextDouble() * (2 * Car.LENGTH)
     for (i <- 1 to tries) {
       val pos = Spawner.spawn(start, end, positions)
-      assert (pos != None)
-      assert(positions.filter(Car.collide(_, pos.get)).isEmpty)
+      assert (pos isDefined)
+      assert(!positions.exists(Car.collide(_, pos.get)))
     }
   }
 }

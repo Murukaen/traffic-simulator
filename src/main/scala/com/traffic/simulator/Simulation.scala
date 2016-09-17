@@ -1,11 +1,8 @@
 package com.traffic.simulator
 
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.{StrictLogging, LazyLogging}
 
-/**
-  * Created by razvan on 25.02.2016.
-  */
-abstract class Simulation(steps: Int) extends LazyLogging {
+abstract class Simulation(steps: Int) extends StrictLogging {
 
   private var stepDone: (Simulation) => Unit = null
 
